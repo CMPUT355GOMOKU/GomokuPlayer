@@ -24,13 +24,13 @@ class board():
                     elif self.board[row_index][col_index][0] == WHITE:
                         print('X',end='')
                 else:
-                    print(' ', end='')
-                if col_index < 17:
+                    print('', end=' ')
+                if col_index < 18:
                     print(' ―', end=' ')
-                elif col_index == 17: 
-                    print(' ―')
+                elif col_index == 18:
+                    print('')
             if row_index != 18:
-                print(' |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |')
+                print('  |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |')
         print("\n")
 
     #returns row index and column index of the given position
