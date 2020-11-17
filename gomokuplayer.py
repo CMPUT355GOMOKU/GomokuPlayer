@@ -124,6 +124,10 @@ class play(board):
     
     #checks whos turn it is currently
     def check_turn(self):
+        return self.turn
+
+    #returns string of turn
+    def str_turn(self):
         if self.turn == BLACK:
             return "BLACK"
         elif self.turn == WHITE:
@@ -156,8 +160,8 @@ def main():
     p = play(b)
     p.board.draw_board()
     while not p.check_end():
-        player_input = input("This is " + p.check_turn() +"'s turn. Enter position to play: ")
-        turn = p.turn
+        player_input = input("This is " + p.str_turn() +"'s turn. Enter position to play: ")
+        turn = p.check_turn()
         try:
             if (2 > len(player_input) > 3) or (player_input[:1] not in alpha_index) or  (1 > int(player_input[1:])) or (int(player_input[1:]) > 19):
                 print("\nWrong input. Please try another position.\n") 
@@ -170,7 +174,7 @@ def main():
             continue
         p.board.draw_board()
         if p.check_win(player_input,turn):
-            print(p.check_turn() + " HAS WON!")
+            print(p.str_turn() + " HAS WON!")
         p.switch_turn()
         
 
