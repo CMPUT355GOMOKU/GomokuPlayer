@@ -1,6 +1,15 @@
 #!/usr/bin/env python
 BLACK = 0
 WHITE = 1
+
+LEFT = 0
+TOPLEFT = 1
+TOP = 2
+TOPRIGHT = 3
+RIGHT = 4
+BOTTOMRIGHT = 5
+BOTTOM = 6
+BOTTOMLEFT = 7
 alpha_index = 'abcdefghijklmnopqrs'
 
 class board():
@@ -65,16 +74,9 @@ class board():
     #checks if there are 5 or more horizontally connected stones of given colour from given position.
     def horizontal_line(self,position,colour):
         row,col = self.get_row_col(position)
-        connection = 1
-        for ith in range(1,5):
-            if col + ith < 20:
-                if self.board[row][col+ith]:
-                    if self.board[row][col+ith][0] == colour:
-                        connection += 1
-            if col - ith >= 0:
-                if self.board[row][col-ith]:
-                    if self.board[row][col-ith][0] == colour:
-                        connection +=1
+        left_connection = self.find_connection(position,colour,LEFT)
+        right_connection = self.find_connection(position,colour,RIGHT)
+        connection = 1 + left_connection + right_connection
         if connection >= 5:
             return True
         return False
@@ -82,16 +84,9 @@ class board():
     #checks if there are 5 or more vertically connected stones of given colour from given position.
     def vertical_line(self,position,colour):
         row,col = self.get_row_col(position)
-        connection = 1
-        for ith in range(1,5):
-            if row + ith < 20:
-                if self.board[row+ith][col]:
-                    if self.board[row+ith][col][0] == colour:
-                        connection += 1
-            if row - ith >= 0:
-                if self.board[row-ith][col]:
-                    if self.board[row-ith][col][0] == colour:
-                        connection +=1
+        top_connection = self.find_connection(position,colour,TOP)
+        bottom_connection = self.find_connection(position,colour,BOTTOM)
+        connection = 1 + top_connection + bottom_connection
         if connection >= 5:
             return True
         return False 
@@ -99,27 +94,113 @@ class board():
     #checks if there are 5 or more diagonally connected stones of given colour from given position.
     def diagonal_line(self,position,colour):
         row,col = self.get_row_col(position)
-        connection = 1
-        for ith in range(1,5):
-            if row - ith >= 0 and col + ith < 20:
-                if self.board[row-ith][col+ith]:
-                    if self.board[row-ith][col+ith][0] == colour:
-                        connection += 1
-            if row + ith < 20 and col - ith >= 0:
-                if self.board[row+ith][col-ith]:
-                    if self.board[row+ith][col-ith][0] == colour:
-                        connection +=1
-            if row - ith >= 0 and col - ith >= 0:
-                if self.board[row-ith][col-ith]:
-                    if self.board[row-ith][col-ith][0] == colour:
-                        connection += 1
-            if row + ith < 20 and col + ith < 20:
-                if self.board[row+ith][col+ith]:
-                    if self.board[row+ith][col+ith][0] == colour:
-                        connection +=1
-        if connection >= 5:
+        topleft_connection = self.find_connection(position,colour,TOPLEFT)
+        topright_connection = self.find_connection(position,colour,TOPRIGHT)
+        bottomleft_connection = self.find_connection(position,colour,BOTTOMLEFT)
+        bottomright_connection = self.find_connection(position,colour,BOTTOMRIGHT)
+        topleft_bottomright_connection = 1 + topleft_connection + bottomright_connection
+        topright_bottomleft_connection = 1 + topright_connection + bottomleft_connection
+        if topleft_bottomright_connection >= 5 or topright_bottomleft_connection >= 5:
             return True
-        return False              
+        return False 
+
+    #for given direction, find number of consecutive stones of given colour 
+    def find_connection(self,position,colour, direction):
+        row,col = self.get_row_col(position)
+        connection = 0
+        ith = 1
+        while True:
+            if direction == LEFT:
+                if col - ith >= 0:
+                    if self.board[row][col-ith]:
+                        if self.board[row][col-ith][0] == colour:
+                            connection += 1 
+                        else:
+                            break
+                    else:
+                        break
+                else:
+                    break
+            if direction == RIGHT:
+                if col + ith >= 0:
+                    if self.board[row][col+ith]:
+                        if self.board[row][col+ith][0] == colour:
+                            connection += 1 
+                        else:
+                            break
+                    else:
+                        break
+                else:
+                    break
+            if direction == TOP:
+                if row - ith >= 0:
+                    if self.board[row-ith][col]:
+                        if self.board[row-ith][col][0] == colour:
+                            connection += 1 
+                        else:
+                            break
+                    else:
+                        break
+                else:
+                    break
+            if direction == BOTTOM:
+                if row + ith >= 0:
+                    if self.board[row+ith][col]:
+                        if self.board[row+ith][col][0] == colour:
+                            connection += 1 
+                        else:
+                            break
+                    else:
+                        break
+                else:
+                    break
+            if direction == TOPLEFT:
+                if row - ith >= 0 and col - ith >= 0:
+                    if self.board[row-ith][col-ith]:
+                        if self.board[row-ith][col-ith][0] == colour:
+                            connection += 1 
+                        else:
+                            break
+                    else:
+                        break
+                else:
+                    break
+            if direction == TOPRIGHT:
+                if row - ith >= 0 and col + ith < 20:
+                    if self.board[row-ith][col+ith]:
+                        if self.board[row-ith][col+ith][0] == colour:
+                            connection += 1 
+                        else:
+                            break
+                    else:
+                        break
+                else:
+                    break
+            if direction == BOTTOMLEFT:
+                if row + ith < 20 and col - ith >= 0:
+                    if self.board[row+ith][col-ith]:
+                        if self.board[row+ith][col-ith][0] == colour:
+                            connection += 1 
+                        else:
+                            break
+                    else:
+                        break
+                else:
+                    break
+            if direction == BOTTOMRIGHT:
+                if row + ith < 20 and col + ith < 20:
+                    if self.board[row+ith][col+ith]:
+                        if self.board[row+ith][col+ith][0] == colour:
+                            connection += 1 
+                        else:
+                            break
+                    else:
+                        break
+                else:
+                    break
+            ith += 1
+        return connection 
+        
 
 class play(board):
     #initializes the starting state 
