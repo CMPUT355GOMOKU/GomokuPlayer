@@ -261,11 +261,25 @@ def main():
     b = board()
     p = play(b)
     p.board.draw_board()
+
     while True:
         numPlayers = input("type 1 for PvC or type 2 for PvP: ")
         if numPlayers == "1" or numPlayers == "2":
             break
         print("Wrong input. Please try again")
+
+    while True:
+        if numPlyaers == "1":
+            startas = input("Would you like to start as black? or white?").upper()        
+            if startas == "WHITE":
+                p.switch_turn()
+                break
+            elif startas == "BLACK":
+                break
+            else:
+                print("\nWrong input. Please try another position.\n")
+                continue
+
     while not p.check_end():
         if numPlayers == "2":
             player_input = input("This is " + p.str_turn() +"'s turn. Enter position to play (Ex.: a1) : ")
@@ -289,6 +303,8 @@ def main():
         elif numPlayers == "1":
             print("not implemented yet :P")
             break
+
+
         
 
 if __name__ == '__main__':
