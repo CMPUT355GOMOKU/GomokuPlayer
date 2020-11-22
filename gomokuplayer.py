@@ -301,6 +301,8 @@ def main():
                 print("Draw")
             p.switch_turn()
         elif numPlayers == "1":
+            print("not implemented yet :P")
+            break
 
 
         
