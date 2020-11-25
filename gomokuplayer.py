@@ -332,6 +332,6 @@ def main():
         if reply == "NO":
             continueGame = False
             print("Thanks for playing Gomoku!\n")
-
+            
 if __name__ == '__main__':
     main()
