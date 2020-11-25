@@ -249,12 +249,11 @@ class play(board):
     #checks if the board is full
     def check_full(self):
         if self.board.check_full():
-            self.end == True
+            self.end = True
             return True
         else: 
             return False
                 
-
 
     
 def main():
@@ -269,19 +268,22 @@ def main():
         print("Wrong input. Please try again")
 
     while True:
-        if numPlyaers == "1":
-            startas = input("Would you like to start as black? or white?").upper()        
-            if startas == "WHITE":
+        if numPlayers == "1":
+            player_colour = input("Would you like to start as black? or white?").upper()        
+            if player_colour == "WHITE":
                 p.switch_turn()
                 break
-            elif startas == "BLACK":
+            elif player_colour == "BLACK":
                 break
             else:
                 print("\nWrong input. Please try another position.\n")
                 continue
+        else:
+            break
 
     while not p.check_end():
         if numPlayers == "2":
+            
             player_input = input("This is " + p.str_turn() +"'s turn. Enter position to play (Ex.: a1) : ")
             turn = p.check_turn()
             try:
@@ -300,12 +302,11 @@ def main():
             elif p.check_full():
                 print("Draw")
             p.switch_turn()
+
         elif numPlayers == "1":
             print("not implemented yet :P")
             break
 
-
-        
 
 if __name__ == '__main__':
     main()
