@@ -308,16 +308,30 @@ def game():
             break
     
 def main():
+    white, black = 0, 0
     continueGame = True
 
     while continueGame:
         win = game()
 
-        reply = input("Would you like to start a new game of Gomoku? ('yes' or 'no'): ").upper()
+        if win == "WHITE":
+            white += 1
+        elif win == "BLACK":
+            black += 1
+        
+        print("Scores\n{}".format('-'* 40))
+        print("White: {}\nBlack: {}\n\n".format(white, black))
+
+        # Validate game continuation
+        while True: 
+            reply = input("Would you like to start a new game of Gomoku? ('yes' or 'no'): ").upper()
+            if reply == "YES" or reply == "NO":
+                print("\n")
+                break
 
         if reply == "NO":
             continueGame = False
             print("Thanks for playing Gomoku!\n")
-
+            
 if __name__ == '__main__':
     main()
