@@ -254,9 +254,7 @@ class play(board):
         else: 
             return False
                 
-
-    
-def main():
+def game():
     b = board()
     p = play(b)
     p.board.draw_board()
@@ -298,14 +296,28 @@ def main():
                 continue
             p.board.draw_board()
             if p.check_win(player_input,turn):
-                print(p.str_turn() + " HAS WON!")
+                print(p.str_turn() + " HAS WON!\n")
+                return(p.str_turn())
             elif p.check_full():
                 print("Draw")
+                return("Draw")
             p.switch_turn()
 
         elif numPlayers == "1":
             print("not implemented yet :P")
             break
+    
+def main():
+    continueGame = True
+
+    while continueGame:
+        win = game()
+
+        reply = input("Would you like to start a new game of Gomoku? ('yes' or 'no'): ").upper()
+
+        if reply == "NO":
+            continueGame = False
+            print("Thanks for playing Gomoku!\n")
 
 if __name__ == '__main__':
     main()
