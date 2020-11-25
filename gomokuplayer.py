@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+
+import random
+
 BLACK = 0
 WHITE = 1
 
@@ -304,8 +307,45 @@ def game():
             p.switch_turn()
 
         elif numPlayers == "1":
-            print("not implemented yet :P")
-            break
+            LETTERS = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s"]
+            NUMBERS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19"]
+            r1 = random.choice(LETTERS)
+            r2 = random.choice(NUMBERS)
+            r3 = r1+r2
+            if p.str_turn() == player_colour:
+                if player_colour == "BLACK":
+                    player_input = input("This is " + player_colour +"'s turn. Enter position to play (Ex. : a1) : ")
+                else:
+                    player_input = r3
+                    print("This is BLACK's turn. Position played : " + player_input)
+            else:
+                if player_colour == "BLACK":
+                    player_input = r3
+                    print("This is WHITE's turn. Position played : " + player_input)
+                else:
+                    player_input = input("This is " + player_colour +"'s turn. Enter position to play (Ex. : a1) : ")
+
+                
+            turn = p.check_turn()
+        
+            try:
+                if (2 > len(player_input) > 3) or (player_input[:1] not in alpha_index) or  (1 > int(player_input[1:])) or (int(player_input[1:]) > 19):
+                    print("\nInvalid input. Please try another position.\n") 
+                    continue
+            except ValueError:
+                print("\nInvalid input. Please try another position.\n")
+                continue
+            if not p.update_board(player_input):
+                print("\nA stone is already played at this position. Please try another position.\n")
+                continue
+            p.board.draw_board()
+            if p.check_win(player_input,turn):
+                print(p.str_turn() + " HAS WON!\n")
+                return(p.str_turn())
+            elif p.check_full():
+                print("Draw")
+                return("Draw")
+            p.switch_turn()
     
 def main():
     white, black = 0, 0
