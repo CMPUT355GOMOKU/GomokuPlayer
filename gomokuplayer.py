@@ -260,21 +260,21 @@ def game():
     p.board.draw_board()
 
     while True:
-        numPlayers = input("type 1 for PvC or type 2 for PvP: ")
+        numPlayers = input("Type 1 for PvC or Type 2 for PvP: ")
         if numPlayers == "1" or numPlayers == "2":
             break
-        print("Wrong input. Please try again")
+        print("Invalid input. Please try again.")
 
     while True:
         if numPlayers == "1":
-            player_colour = input("Would you like to start as black? or white?").upper()        
+            player_colour = input("Would you like to start as Black or White?").upper()        
             if player_colour == "WHITE":
                 p.switch_turn()
                 break
             elif player_colour == "BLACK":
                 break
             else:
-                print("\nWrong input. Please try another position.\n")
+                print("\nInvalid input. Please try another position.\n")
                 continue
         else:
             break
@@ -286,13 +286,13 @@ def game():
             turn = p.check_turn()
             try:
                 if (2 > len(player_input) > 3) or (player_input[:1] not in alpha_index) or  (1 > int(player_input[1:])) or (int(player_input[1:]) > 19):
-                    print("\nWrong input. Please try another position.\n") 
+                    print("\nInvalid input. Please try another position.\n") 
                     continue
             except ValueError:
-                print("\nWrong input. Please try another position.\n")
+                print("\nInvalid input. Please try another position.\n")
                 continue
             if not p.update_board(player_input):
-                print("\nA stone was played at the position. Please try another position.\n")
+                print("\nA stone is already played at this position. Please try another position.\n")
                 continue
             p.board.draw_board()
             if p.check_win(player_input,turn):
