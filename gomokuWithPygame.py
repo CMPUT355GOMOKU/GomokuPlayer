@@ -1,3 +1,7 @@
+import pygame, tkinter as tk
+from tkinter import simpledialog
+
+
 #!/usr/bin/env python
 BLACK = 0
 WHITE = 1
@@ -16,31 +20,42 @@ class board():
     #initializes an empty board
     def __init__(self):
         self.board = [[[] for i in range(0,20)] for j in range(0,20)]
+        self.cell_size = 800/19
+        self.num_rows = 19
 
     #returns the current board
     def get_board(self):
         return self.board
 
     #prints out the current board
-    def draw_board(self):
-        print('  1   2   3   4   5   6   7   8   9   10  11  12  13  14  15  16  17  18  19')
-        for row_index in range(0,19):
-            print(alpha_index[row_index], end=' ')
-            for col_index in range(0,19):
-                if self.board[row_index][col_index]:
-                    if self.board[row_index][col_index][0] == BLACK:
-                        print('O', end='')
-                    elif self.board[row_index][col_index][0] == WHITE:
-                        print('X',end='')
-                else:
-                    print('', end=' ')
-                if col_index < 18:
-                    print(' ―', end=' ')
-                elif col_index == 18:
-                    print('')
-            if row_index != 18:
-                print('  |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |')
-        print("\n")
+    def draw_board(self, screen):
+        pygame.init()
+        font = pygame.font.Font('CONSOLA.TTF', 21)
+        increment = self.cell_size
+        pygame.draw.rect(screen, (185, 122, 87), [0,0, 1000, 1000], 0)
+
+        for row in range(self.num_rows):
+            text = font.render(str(row+1), 1, (0, 0, 0))
+            screen.blit(text, (((95 + self.cell_size) + ((increment - 0.5) * row)), 100))
+            y = (row + 1) * (800 / 19)
+            pygame.draw.line(screen, (0, 0, 0), [100 + self.cell_size, y + 100], [900, y + 100], 2)
+
+        for col in range(self.num_rows):
+            text = font.render(str(alpha_index[col]), 1, (0, 0, 0))
+            screen.blit(text, (100,(90 + self.cell_size) + ((increment) * col)))
+            x = (col + 1) * (800 / 19)
+            pygame.draw.line(screen, (0, 0, 0), [x + 100, 100 + self.cell_size], [x + 100, 900], 2)
+
+        for row in range(self.num_rows):
+            for col in range(self.num_rows):
+                if self.board[row][col]:
+                    if self.board[row][col][0] == BLACK:
+                        color = (0, 0, 0)
+                    else:
+                        color = (255, 255, 255)
+                    x = col * self.cell_size + 100 + self.cell_size
+                    y = row * self.cell_size + 100 + self.cell_size
+                    pygame.draw.circle(screen, color, [x,y], 17)
 
     #returns row index and column index of the given position
     def get_row_col(self,position):
@@ -180,7 +195,7 @@ class board():
                 if row + ith < 20 and col - ith >= 0:
                     if self.board[row+ith][col-ith]:
                         if self.board[row+ith][col-ith][0] == colour:
-                            connection += 1 
+                            connection += 1
                         else:
                             break
                     else:
@@ -191,7 +206,7 @@ class board():
                 if row + ith < 20 and col + ith < 20:
                     if self.board[row+ith][col+ith]:
                         if self.board[row+ith][col+ith][0] == colour:
-                            connection += 1 
+                            connection += 1
                         else:
                             break
                     else:
@@ -199,20 +214,20 @@ class board():
                 else:
                     break
             ith += 1
-        return connection 
-        
+        return connection
+
 
 class play(board):
-    #initializes the starting state 
+    #initializes the starting state
     def __init__(self,board):
         self.board = board
         self.turn = BLACK
         self.end = False
-    
+
     #checks if game ended
     def check_end(self):
         return self.end
-    
+
     #checks whos turn it is currently
     def check_turn(self):
         return self.turn
@@ -249,28 +264,31 @@ class play(board):
     #checks if the board is full
     def check_full(self):
         if self.board.check_full():
-            self.end == True
+            self.end = True
             return True
-        else: 
+        else:
             return False
-                
 
 
-    
+
 def main():
     b = board()
     p = play(b)
-    p.board.draw_board()
+    #white, black = 0, 0
+    #continueGame = True
 
     while True:
         numPlayers = input("type 1 for PvC or type 2 for PvP: ")
         if numPlayers == "1" or numPlayers == "2":
             break
-        print("Wrong input. Please try again")
+        print("Invalid input. Please try again.")
+    if numPlayers == "1":
+        print("not implemented yet :P")
+        return False
 
     while True:
-        if numPlyaers == "1":
-            startas = input("Would you like to start as black? or white?").upper()        
+        if numPlayers == "1":
+            startas = input("Would you like to start as black? or white?").upper()
             if startas == "WHITE":
                 p.switch_turn()
                 break
@@ -279,33 +297,97 @@ def main():
             else:
                 print("\nWrong input. Please try another position.\n")
                 continue
-
-    while not p.check_end():
-        if numPlayers == "2":
-            player_input = input("This is " + p.str_turn() +"'s turn. Enter position to play (Ex.: a1) : ")
-            turn = p.check_turn()
-            try:
-                if (2 > len(player_input) > 3) or (player_input[:1] not in alpha_index) or  (1 > int(player_input[1:])) or (int(player_input[1:]) > 19):
-                    print("\nWrong input. Please try another position.\n") 
-                    continue
-            except ValueError:
-                print("\nWrong input. Please try another position.\n")
-                continue
-            if not p.update_board(player_input):
-                print("\nA stone was played at the position. Please try another position.\n")
-                continue
-            p.board.draw_board()
-            if p.check_win(player_input,turn):
-                print(p.str_turn() + " HAS WON!")
-            elif p.check_full():
-                print("Draw")
-            p.switch_turn()
-        elif numPlayers == "1":
-            print("not implemented yet :P")
+        else:
             break
 
+    pygame.init()
+    screen = pygame.display.set_mode((1000,1000))
+    white = (255, 255, 255)
+    board_color = (185, 122, 87)
+    black = (0, 0, 0)
+    drawBoard(p, screen)
+    ROOT = tk.Tk()
+    ROOT.withdraw()
+    gameOver = False
 
+    while not gameOver:
+        if numPlayers == "2":
+            updateGame(p)
+            player_input = simpledialog.askstring(title= p.str_turn() +"'s turn.", prompt="Enter a position to play (ex:a1)")
+            turn = p.check_turn()
+            try:
+                if (2 > len(player_input) > 3) or (player_input[:1] not in alpha_index) or (1 > int(player_input[1:])) or (int(player_input[1:]) > 19):
+                    tk.messagebox.showerror(title="Wrong input", message="Please try another position.")
+                    continue
+            except ValueError:
+                tk.messagebox.showerror(title="Wrong input", message="Please try another position.")
+                continue
+            if not p.update_board(player_input):
+                tk.messagebox.showerror(title="wrong input", message="A stone was already placed at that position")
+                continue
+            drawBoard(p, screen)
+            if p.check_win(player_input, turn):
+                tk.messagebox.showinfo(title="Victory!", message = p.str_turn() + " HAS WON!")
+            elif p.check_full():
+                tk.messagebox.showinfo(title="Draw", message="Nobody won")
+            p.switch_turn()
+            gameOver = p.check_end()
+        if gameOver:
+            replay = tk.messagebox.askquestion(title="Play again?", message="Would you like to play again?").upper()
+            if replay == "YES":
+                pygame.display.quit()
+                main()
+                gameOver = False
+
+    pygame.display.quit()
+    pygame.quit()
+
+def updateGame(game):
+    gameOver = False
+    for position in pygame.event.get():
+        if position.type == pygame.QUIT:
+            gameOver = True
+            pygame.quit()
+    return gameOver
+
+
+def drawBoard(game, screen):
+
+    game.board.draw_board(screen)
+    font = pygame.font.Font('CONSOLA.TTF', 30)
+    text = font.render("Made by Gomovis", 1, (0, 0, 0))
+    screen.blit(text, (650,50))
+    #scoreText = font.render("Scores\n{}".format('-'* 40) + "\nWhite: {}\nBlack: {}\n\n".format(white, black))
+    #screen.blit(scoreText, (150, 50))
+
+
+    pygame.display.update()
+    return game.check_end()
+    
+
+'''def main():
+
+    white, black = 0, 0
+    continueGame = True
+    pygame.init()
+
+    while continueGame:
+        win = game()
         
+        if win == "WHITE":
+            white += 1
+        elif win == "BLACK":
+            black += 1
+        text = font.render("Scores\n{}".format('-'*40) + "\nWhite: {}\nBlack: {}\n".format(white,black), 1, (0, 0, 0))
+        screen.blit(text, (50, 50))
+
+    while True:        
+        replay = tk.messagebox.askquestion(title="Game Over!", message="Would you like to start a \nnew game of Gomoku? ('yes' or 'no'): ").upper()
+        if replay == 'YES' or replay == 'NO':
+            break
+    if replay == "NO":
+        continueGame = False'''
+
 
 if __name__ == '__main__':
     main()
